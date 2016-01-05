@@ -4,13 +4,18 @@ package com.google.maps.android.utils.demo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
 
 import com.google.maps.android.utils.demo.model.MyMarker;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public abstract class MainActivity extends Activity implements View.OnClickListener,LocationListener {
     private ViewGroup mListView;
     private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<MyMarker>();
 
@@ -32,7 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mListView = (ViewGroup) findViewById(R.id.list);
 
 
-        addlayer("GeoJSON Layer", GeoJsonDemoActivity.class);
+        addlayer("GeoJSON Layer", GeoJsonActivity.class);
         addlayer("Add Layouts",Layout.class);
 
     }

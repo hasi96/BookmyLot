@@ -30,7 +30,13 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:name="com.google.android.gms.maps.SupportMapFragment"
-            tools:layout="@layout/geojson_demo"/>
+            tools:layout="@layout/geojson_demo"
 
+        android:layout_above="@+id/latlongLocation" />
+
+    <TextView
+        android:id="@+id/latlongLocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

@@ -51,7 +51,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".GeoJsonDemoActivity"/>
+        <activity android:name=".GeoJsonActivity"/>
         <activity android:name=".Layout"/>
 
     </application>
