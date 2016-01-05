@@ -1,6 +1,8 @@
 package com.google.maps.android.utils.demo;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +15,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -30,6 +37,9 @@ import org.json.JSONObject;
  */
 public abstract class addlayout extends FragmentActivity implements OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
     JSONObject json=new JSONObject();
+    private static final String TAG = MainActivity.class.getName();
+    private static final String FILENAME = "myFile.txt";
+    private Context context;
     final LatLng[][] a = new LatLng[1000][1000];
     public GoogleMap mmap;
     int i=0;
@@ -39,7 +49,17 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
     boolean markerClicked;
     PolylineOptions rectOptions;
     Polyline polyline;
-        public JSONObject createjson() {
+    private void writeToFile(String data) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(FILENAME, Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e(TAG, "File write failed: " + e.toString());
+        }
+    }
+
+    public JSONObject createjson() {
             JSONObject jsonObject = new JSONObject();
             try {
                 JSONArray json = new JSONArray();
@@ -47,6 +67,8 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
                     while (a[row][0] != null) {
                         JSONObject featuredata = new JSONObject();
                         featuredata.put("type", "Feature");
+                        JSONObject blank = new JSONObject();
+                        featuredata.put("properties",blank);
                         JSONObject geometry = new JSONObject();
                         if (a[row][0].longitude == 0) {
                             geometry.put("type", "Point");
@@ -55,6 +77,7 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
                             geometry.put("type", "LineString");
                         }
                         JSONArray coords = new JSONArray();
+
                         int len = 1;
                         while (a[row][len] != null) {
                             JSONArray arr = new JSONArray();
@@ -62,21 +85,28 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
                             double y = a[row][len].longitude;
                             arr.put(x);
                             arr.put(y);
+                            if(a[row][0].longitude == 0){
+                                geometry.put("coordinates",arr);
+                            }
                             coords.put(arr);
                             len = len + 1;
                         }
-                        geometry.put("coordinates", coords);
+                        if(a[row][0].longitude == 1)
+                        { geometry.put("coordinates", coords);}
+
                         featuredata.put("geometry", geometry);
                         json.put(featuredata);
                         row = row + 1;
                     }
                 jsonObject.put("features", json);
                 jsonObject.put("type", "FeatureCollection");
+               writeToFile(String.valueOf(jsonObject));
                 Log.e("pleaseey", String.valueOf(jsonObject));
             } catch (JSONException je) {
             }
             return jsonObject;
         }
+
     protected int getLayoutId() {
         return R.layout.map;
     }
@@ -105,8 +135,8 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
         bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.redpoint);
         mmap.setOnMapLongClickListener(this);
       mmap.setOnMarkerClickListener(this);
-        i=i+1;
-        }
+        i = i + 1;
+    }
 
     public void onMapClick (LatLng point) {
 
@@ -152,11 +182,12 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
     {
         allfeatures=1;
         JSONObject GEOJSON =  createjson();
+
         allfeatures=0;
     }
 
 
-    @Override
+        @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();

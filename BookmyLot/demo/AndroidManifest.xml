@@ -6,7 +6,7 @@
 
     <uses-sdk
             android:minSdkVersion="9"
-            android:targetSdkVersion="22"/>
+            android:targetSdkVersion="21"/>
 
     <permission
             android:name="com.google.maps.android.utils.permission.MAPS_RECEIVE"
@@ -51,7 +51,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".GeoJsonActivity"/>
+        <activity android:name=".GeoJsonDemoActivity"/>
         <activity android:name=".Layout"/>
 
     </application>

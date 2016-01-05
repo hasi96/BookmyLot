@@ -11,32 +11,59 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.util.Log;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class GeoJsonActivity extends BaseDemoActivity {
+public class GeoJsonDemoActivity extends BaseDemoActivity {
 
     private final static String mLogTag = "GeoJsonDemo";
-
+    private static final String TAG = MainActivity.class.getName();
+    private static final String FILENAME = "myFile.txt";
     // GeoJSON file to download
-    private final String mGeoJsonUrl
-            = "https://api.myjson.com/bins/1wbkv";
+
 
     private GeoJsonLayer mLayer;
+    private String readFromFile() {
 
+        String ret = "";
 
+        try {
+            InputStream inputStream = openFileInput(FILENAME);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
 
     protected int getLayoutId() {
         return R.layout.geojson_demo;
     }
 
-    @Override
     protected void startDemo() {
         DownloadGeoJsonFile downloadGeoJsonFile = new DownloadGeoJsonFile();
         // Download the GeoJSON file
-        downloadGeoJsonFile.execute(mGeoJsonUrl);
+       // downloadGeoJsonFile.execute(mGeoJsonUrl);
     }
 
 
@@ -63,7 +90,8 @@ public class GeoJsonActivity extends BaseDemoActivity {
                 stream.close();
 
                 // Convert result to JSONObject
-                return new JSONObject(result.toString());
+               // return new JSONObject(result.toString());
+                return new JSONObject(readFromFile());
             } catch (IOException e) {
                 Log.e(mLogTag, "GeoJSON file could not be read");
             } catch (JSONException e) {
@@ -80,9 +108,10 @@ public class GeoJsonActivity extends BaseDemoActivity {
                 // Add the layer onto the map
                 mLayer.addLayerToMap();
             }
+
         }
 
-
     }
+
 }
 
