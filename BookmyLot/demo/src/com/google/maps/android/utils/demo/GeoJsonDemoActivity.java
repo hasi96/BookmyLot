@@ -1,21 +1,32 @@
 package com.google.maps.android.utils.demo;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPointStyle;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 
 public class GeoJsonDemoActivity extends BaseDemoActivity {
 
@@ -55,6 +66,7 @@ public class GeoJsonDemoActivity extends BaseDemoActivity {
 
         return ret;
     }
+
 
     protected int getLayoutId() {
         return R.layout.geojson_demo;

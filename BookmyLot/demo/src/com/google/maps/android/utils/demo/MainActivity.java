@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mListView = (ViewGroup) findViewById(R.id.list);
 
 
-        addlayer("GeoJSON Layer", GeoJsonDemoActivity.class);
+        addlayer("Search for parking lots", GeoJsonDemoActivity.class);
         addlayer("Add Layouts",Layout.class);
 
     }

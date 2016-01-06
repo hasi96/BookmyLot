@@ -1,6 +1,8 @@
 package com.google.maps.android.utils.demo;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -28,6 +31,8 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import android.graphics.Color;
 import android.location.Location;
+import android.widget.EditText;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +143,35 @@ public abstract class addlayout extends FragmentActivity implements OnMapClickLi
         i = i + 1;
     }
 
+    public void onSearch(View view) {
+        EditText location_if = (EditText) findViewById(R.id.txtlocation);
+        String location = location_if.getText().toString();
+        List<Address> addressList = null;
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Address address = addressList.get(0);
+            LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
+            mmap.addMarker(new MarkerOptions().position(latlng).title("Marker"));
+
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latlng)
+                    .zoom(10)
+                    .bearing(90)
+                    .tilt(30)
+                    .build();
+            mmap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,zoomLevel));
+        }
+        }
     public void onMapClick (LatLng point) {
 
                    mmap.animateCamera(CameraUpdateFactory.newLatLng(point));
